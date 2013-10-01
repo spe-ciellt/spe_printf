@@ -1,7 +1,7 @@
 
 CC=gcc
 CFLAGS=-Wall -DUSE_DOUBLE
-LDFLAGS=-lm
+LDLIBS=-lm
 
 all: spe_printf-test
 
