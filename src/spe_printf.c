@@ -29,7 +29,7 @@
 #include <math.h>
 #endif /* USE_DOUBLE */
 
-const static char tohex[] = "0123456789abcdef";
+static const char tohex[] = "0123456789abcdef";
 
 static void
 print_char(SPE_FILE *fd, char c)
@@ -239,7 +239,7 @@ print_d(SPE_FILE *fd, double fp, int min_width, int precision)
 
 
 static int
-print_string(SPE_FILE *fd, char *string, int min_width, int precision)
+print_string(SPE_FILE *fd, char *string)
 {
     int i;
 
@@ -276,7 +276,7 @@ conversion(SPE_FILE *fd, const char *fmt, int i, va_list ap)
 	    print_char(fd, va_arg(ap, int));
 	    return i;
 	case 's': /* String */
-	    print_string(fd, va_arg(ap, char*), min_width, precision);
+	    print_string(fd, va_arg(ap, char*));
 	    return i;
 	case 'd': /* Signed integer and long */
 	    if (long_modifier) {
