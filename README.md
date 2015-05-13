@@ -26,6 +26,18 @@ casting to change one part (integer or decimal) of the double to an int lost
 too much precision. So by using truncf() instead I managed to get better
 precision, especially in the decimal part.
 
+Unit tests
+==
+This library has a set of unit tests using the CppUTest framework
+(http://cpputest.github.io/) in the tests directory.
+
+The tests are supposed to run on a platform with a working printf
+implementation. The generated string is compared to a string generated
+by the test systems ordinary printf.
+
+cpputest is supposed to be installed at $(HOME)/tools/cpputest, update in
+tests/Makefile to fit your installation.
+
 Motivation
 ==
 For Cortex M3 using stdio.h available in newlib makes the binary

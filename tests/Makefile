@@ -20,13 +20,44 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-CC=gcc
-CFLAGS=-Wall -Wextra -DUSE_DOUBLE -I../src/
-LDLIBS=-lm
+#---------
+#
+# spe_printf CppUTest  Makefile
+#
+#----------
 
-all: spe_printf-test
+#Set this to @ to keep the makefile quiet
+ifndef SILENCE
+	SILENCE = @
+endif
 
-spe_printf-test: spe_printf-test.o ../src/spe_printf.o
+#--- Inputs ----#
+COMPONENT_NAME = spe_printf
+CPPUTEST_HOME = $(HOME)/tools/cpputest
+TOPDIR = $(shell dirname `pwd`)
 
-clean:
-	rm -f *~ *.o spe_printf-test
+CPPUTEST_USE_EXTENSIONS = Y
+CPPUTEST_WARNINGFLAGS =  -Wall -Wextra -Werror -Wshadow -Wswitch-default -Wswitch-enum
+CPPUTEST_ADDITIONAL_CFLAGS = -DUSE_DOUBLE
+CPPUTEST_LDFLAGS = -lm
+
+CPP_PLATFORM = Gcc
+
+# This line is overriding the default new macros.  This is helpful
+# when using std library includes like <list> and other containers
+# so that memory leak detection does not conflict with stl.
+#CPPUTEST_MEMLEAK_DETECTOR_NEW_MACRO_FILE = -include ApplicationLib/ExamplesNewOverrides.h
+MY_SRC_DIRS = $(TOPDIR)/src
+SRC_FILES = $(MY_SRC_DIRS)/spe_printf.c
+
+TEST_SRC_DIRS = AllTests
+
+MOCKS_SRC_DIRS = Mocks
+
+INCLUDE_DIRS =\
+  $(MY_SRC_DIRS)\
+  AllTests\
+  $(CPPUTEST_HOME)/include
+
+# File from CppUTest distribution that simplifies building tests.
+include MakefileWorker.mk
