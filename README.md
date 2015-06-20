@@ -54,7 +54,7 @@ Usage
 * Make sure you define stdout and stderr as pointers to the variable
   that stores the character printing function.
 
-As an example, see spe_print-test.c. It is much simpler than it sounds.
+As a simple example, see spe_print-example.c. It is much simpler than it sounds.
 
 Good luck,
 Stefan Petersen (spe [at] ciellt (dot) se)
