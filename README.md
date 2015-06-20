@@ -32,6 +32,17 @@ For Cortex M3 using stdio.h available in newlib makes the binary
 about 24k bytes bigger. This library adds less than 2k. This library
 has no input functions though.
 
+What is so special about this library?
+==
+This printf library does not use any buffer to convert numerics to
+printable strings. Instead it divides down the numeric until there is one
+digit left and then starts multiplying back to print the numeric value
+character by character.
+
+Another advantage of not using any internal buffers (except it saves precious
+RAM) is that it could be considered reentrant. Great news if you intend to
+use an RTOS, for instance http://atomthreads.com/.
+
 License
 ==
 Released under the very generous Expat License, see LICENSE.txt.
