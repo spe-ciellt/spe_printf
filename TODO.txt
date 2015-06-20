@@ -1,0 +1,4 @@
+TODO for spe_printf
+
+* Check out https://en.wikipedia.org/wiki/Stdarg.h to get GCC to check
+  parameters to vararg-strings.
