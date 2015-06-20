@@ -21,7 +21,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 CC=gcc
-CFLAGS=-Wall -DUSE_DOUBLE -I../src/
+CFLAGS=-Wall -Wextra -DUSE_DOUBLE -I../src/
 LDLIBS=-lm
 
 all: spe_printf-test
