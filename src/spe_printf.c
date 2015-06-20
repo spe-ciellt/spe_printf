@@ -252,7 +252,7 @@ print_string(SPE_FILE *fd, char *string, int min_width, int precision)
 
 
 static int
-conversion(SPE_FILE *fd, const char *fmt, int i, va_list *ap)
+conversion(SPE_FILE *fd, const char *fmt, int i, va_list ap)
 {
     int long_modifier = 0;
     int min_width = 0;
@@ -273,17 +273,17 @@ conversion(SPE_FILE *fd, const char *fmt, int i, va_list *ap)
 	    return i;
 	    break;
 	case 'c': /* Character */
-	    print_char(fd, va_arg(*ap, int));
+	    print_char(fd, va_arg(ap, int));
 	    return i;
 	case 's': /* String */
-	    print_string(fd, va_arg(*ap, char*), min_width, precision);
+	    print_string(fd, va_arg(ap, char*), min_width, precision);
 	    return i;
 	case 'd': /* Signed integer and long */
 	    if (long_modifier) {
 		long_modifier = 0;
-		print_sil(fd, va_arg(*ap, long), 10, min_width, precision);
+		print_sil(fd, va_arg(ap, long), 10, min_width, precision);
 	    } else {
-		print_si(fd, va_arg(*ap, int), 10, min_width, precision);
+		print_si(fd, va_arg(ap, int), 10, min_width, precision);
 	    }
 	    return i;
 	case 'l': /* long modifier, used with u and d */
@@ -292,22 +292,22 @@ conversion(SPE_FILE *fd, const char *fmt, int i, va_list *ap)
 	case 'u': /* Unsigned integer and long */
 	    if (long_modifier) {
 		long_modifier = 0;
-		print_uil(fd, va_arg(*ap, unsigned long), 10,
+		print_uil(fd, va_arg(ap, unsigned long), 10,
 			  min_width, precision, 0);
 	    } else {
-		print_ui(fd, va_arg(*ap, unsigned int), 10,
+		print_ui(fd, va_arg(ap, unsigned int), 10,
 			 min_width, precision, 0);
 	    }
 	    return i;
 	case 'x': /* Hex */
-	    print_ui(fd, va_arg(*ap, unsigned int), 16, min_width, precision, 0);
+	    print_ui(fd, va_arg(ap, unsigned int), 16, min_width, precision, 0);
 	    return i;
 	case 'b': /* Binary */
-	    print_ui(fd, va_arg(*ap, unsigned int), 2, min_width, precision, 0);
+	    print_ui(fd, va_arg(ap, unsigned int), 2, min_width, precision, 0);
 	    return i;
 #ifdef USE_DOUBLE
 	case 'f':
-	    print_d(fd, va_arg(*ap, double), min_width, precision);
+	    print_d(fd, va_arg(ap, double), min_width, precision);
 	    return i;
 #else
 	    return -1;
@@ -335,8 +335,9 @@ conversion(SPE_FILE *fd, const char *fmt, int i, va_list *ap)
     return 0;
 } /* conversion */
 
-static int
-internal_fprintf(SPE_FILE *fd, const char *fmt, va_list *ap)
+
+int
+spe_vfprintf(SPE_FILE *fd, const char *fmt, va_list ap)
 {
     int i;
 
@@ -351,7 +352,14 @@ internal_fprintf(SPE_FILE *fd, const char *fmt, va_list *ap)
     }
 
     return 0;
-} /* internal_fprintf */
+} /* spe_vfprintf */
+
+
+int
+spe_vprintf(const char *fmt, va_list ap)
+{
+    return spe_vfprintf(spe_stdout, fmt, ap);
+} /* spe_vprintf */
 
 
 int
@@ -361,7 +369,7 @@ spe_fprintf(SPE_FILE *fd, const char *fmt, ...)
     int returned;
 
     va_start(ap, fmt);
-    returned = internal_fprintf(fd, fmt, &ap);
+    returned = spe_vfprintf(fd, fmt, ap);
     va_end(ap);
 
     return returned;
@@ -375,7 +383,7 @@ spe_printf(const char *fmt, ...)
     int returned;
 
     va_start(ap, fmt);
-    returned = internal_fprintf(spe_stdout, fmt, &ap);
+    returned = spe_vfprintf(spe_stdout, fmt, ap);
     va_end(ap);
 
     return returned;

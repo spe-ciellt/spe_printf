@@ -24,6 +24,9 @@
 #ifndef SPE_PRINTF_H
 #define SPE_PRINTF_H
 
+/* For the variadic versions of the functions. */
+#include <stdarg.h>
+
 /*
  * Structure to keep track of the current file instantiation.
  * Don't modify directly, use accessor below.
@@ -77,5 +80,11 @@ int spe_fprintf(SPE_FILE *fd, const char *fmt, ...);
  * Note that spe_stderr must have been defined.
  */
 int spe_printf(const char *fmt, ...);
+
+/**
+ * Variadic versions of the above functions.
+ */
+int spe_vfprintf(SPE_FILE *fd, const char *fmt, va_list ap);
+int spe_vprintf(const char *fmt, va_list ap);
 
 #endif /* SPE_PRINTF_H */
