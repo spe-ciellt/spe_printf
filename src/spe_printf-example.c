@@ -43,6 +43,10 @@ main(int argc, char *argv[])
     uint8_t other = 123;
     int r;
 
+    /* Fix stupid compilation warning */
+    argc = argc;
+    argv = argv;
+
     r = spe_printf("Percent:%% string:%s \n", msg);
     assert(r == 0);
 
