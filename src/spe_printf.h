@@ -27,33 +27,45 @@
 /* For the variadic versions of the functions. */
 #include <stdarg.h>
 
-/*
- * Structure to keep track of the current file instantiation.
- * Don't modify directly, use accessor below.
+/**
+ * File descriptor declaration. Use macro SPE_FILE for declaration.\n
+ * Don't modify directly, use accessor below. \n
+ * For example on how to declare and use, see spe_printf-example.c.
  */
 struct spe_fd {
-    void (*putc)(char c);
+    void (*putc)(char c); /*!< Callback function */
 };
 
-/*
+/**
  * File descriptor used thru out spe_printf
  */
 #define SPE_FILE struct spe_fd
 
-/*
+/**
  * Register the print out one character callback function.
- * The function is defines as 'void putc(char c)'.
+ * The callback function is defined as \code void putc(char c) \endcode.
  */
 #define SPE_PRINTF_SETUP(p) \
     { \
 	.putc = p, \
     }
 
-/*
- * Forward declaration of stdout and stderr. Needs to be defined
- * so spe_printf works.
+
+/**
+ * \b spe_stdout
+ * 
+ * Defines stdout in the spe_print library. Must be defined
+ * before spe_printf() et al can be used. For example on how to declare and
+ * use, see spe_printf-example.c.
  */
 extern SPE_FILE *spe_stdout;
+
+/**
+ * \b spe_stderr
+ * 
+ * Defines stderr in the spe_print library. For example on how to declare and
+ * use, see spe_printf-example.c.
+ */
 extern SPE_FILE *spe_stderr;
 
 
@@ -70,20 +82,8 @@ extern SPE_FILE *spe_stderr;
  * 'f': Double, floating point, if support is compiled in
  */
 
-/*
- * spe_fprintf is the local version is fprintf.
- */
 int spe_fprintf(SPE_FILE *fd, const char *fmt, ...);
-
-/*
- * spe_printf is the local version is printf.
- * Note that spe_stderr must have been defined.
- */
 int spe_printf(const char *fmt, ...);
-
-/**
- * Variadic versions of the above functions.
- */
 int spe_vfprintf(SPE_FILE *fd, const char *fmt, va_list ap);
 int spe_vprintf(const char *fmt, va_list ap);
 

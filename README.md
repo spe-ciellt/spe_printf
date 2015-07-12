@@ -20,16 +20,24 @@ It does not support:
 double()
 ==
 It can print doubles also. Then the variable USE_DOUBLE needs to be set
-when compiling, by for instance adding CFLAGS+=-DUSE_DOUBLE in the Makefile.
+when compiling, by for instance adding *CFLAGS+=-DUSE_DOUBLE* in the Makefile.
 When including usage of double, math.h and math lib is necessary. Using just
 casting to change one part (integer or decimal) of the double to an int lost
 too much precision. So by using truncf() instead I managed to get better
 precision, especially in the decimal part.
 
+Documentation
+==
+This library is documented using the [Doxygen](http://www.doxygen.org/) format.
+
+In the src directory, execute `make doxygen`. This will generate a
+subdirectory in the src directory called docs. By default only html
+is generated. Start of by pointing your browser at *docs/html/index.html*.
+
 Unit tests
 ==
-This library has a set of unit tests using the CppUTest framework
-(http://cpputest.github.io/) in the tests directory.
+This library has a set of unit tests using the
+[CppUTest framework](http://cpputest.github.io/) in the tests directory.
 
 The tests are supposed to run on a platform with a working printf
 implementation. The generated string is compared to a string generated
@@ -53,7 +61,7 @@ character by character.
 
 Another advantage of not using any internal buffers (except it saves precious
 RAM) is that it could be considered reentrant. Great news if you intend to
-use an RTOS, for instance http://atomthreads.com/.
+use an RTOS, for instance [AtomThreads](http://atomthreads.com/).
 
 License
 ==

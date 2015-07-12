@@ -21,6 +21,73 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/*! \mainpage
+ * \section intro A simple printf library
+ *
+ * This library implements the printf function usually found in different
+ * libc libraries. The goal of the implementation is to be as complete as
+ * possible, but at the same time as small as possible and not use any
+ * static nor dynamic buffers.
+ *
+ * It is implemented with the notion of file descriptors. Since no state is
+ * kept between calls, the functions are considered reentrant. That is valid
+ * as long as the callback to output character by character is reentrant
+ * (or protected by mutexes).
+ *
+ * There is a need for startup initialization per file descriptor to
+ * register a callback function to output one single character at a time.
+ * Each file descriptor need its own initalization. That makes it possible to
+ * use file descriptor as a way to print out text at separate outputs, may
+ * it be a serial port, LCD or similar.
+ *
+ * \section conversion_tags Conversion tags
+ * Conversion tags are the character(s) after %.
+ *
+ * \subsection conversion_tags_supported Supported
+ *
+ * \li %: prints out a plain percent character.
+ * \li c: prints out a char variable.
+ * \li s: prints out a zero-terminated string pointed to by a variable.
+ * \li d: prints out a signed integer variable in decimal format.
+ * \li u: prints out an unsigned integer variable in decimal format.
+ * \li x: prints out an unsigned integer variable in hexadecimal format.
+ * \li b: prints out an unsigned integer variable in binary format.
+ * \li f: prints out floating point number, if compiled in. Compile with
+ * ``CFLAGS += -DUSE_DOUBLE`` as argument to compiler.
+ *
+ * \subsection conversion_tags_optional Optional
+ *
+ * The `l` modifier can be used with signed and unsigned conversion tags
+ * print out `long` variables (`%%lu` and `%%ld`).
+ *
+ * \section printf_variants Variants of the printf routines
+ *
+ * There are two groups of printf functions, each with one function that
+ * takes a file descriptor and one that uses stdout.
+ * \li The general group contains spe_printf() and spe_fprintf()
+ * \li The variadic group contains spe_vprintf() and spe_vfprintf()
+ * (see https://en.wikipedia.org/wiki/Variadic_function)
+ *
+ * \section supported What is supported and what is not supported
+ *
+ * To understand what *minimal width* and *precision* are, see: \n
+ * \b "The C Programming Language, Second Edition", Brian W. Kernighan &
+ * Dennis M. Ritchie, pp.153-155. \n
+ *
+ * \subsection supported_supported Supported
+ * \li All conversion tags above.
+ * \li Minimal width and optional precision for all numerical types.
+ * \li Reentrance (of course if callback is reentrant).
+ *
+ * \subsection supported_unsupported Unsupported
+ * \li minimal width and optional precision for strings.
+ * \li negative minimal width (left adjustment).
+ * \li minimal width as a parameter to the conversion string.
+ */
+
+/**
+ * \file
+ */
 #include <stdarg.h>
 
 #include "spe_printf.h"
@@ -37,7 +104,23 @@ print_char(SPE_FILE *fd, char c)
     fd->putc(c);
 } /* print_char */
 
-
+/**
+ * \b print_uil
+ *
+ * This is an internal function not for use by application code.
+ *
+ * Print unsigned integer long to fd.
+ *
+ * @param fd Pointer to filedescriptor to output result to.
+ * @param number The actual number to print out.
+ * @param base Base to print out number in. Most comman are 2, 10 and 16.
+ * @param min_width Minimum field width.
+ * @param precision Minimum number of digits to represent the integer.
+ * @param neg Non-zero if a minus sign should be added. Determined by the
+              conversion parser.
+ * @retval 0 on succes
+ * @retval -1 on failure
+ */
 static int
 print_uil(SPE_FILE *fd, unsigned long number, int base,
 	  int min_width, int precision, int neg)
@@ -97,7 +180,23 @@ print_uil(SPE_FILE *fd, unsigned long number, int base,
     return 0;
 } /* print_uil */
 
-
+/**
+ * \b print_sil
+ *
+ * This is an internal function not for use by application code.
+ *
+ * Print signed integer long to fd.
+ *
+ * @param fd Pointer to filedescriptor to output result to.
+ * @param number The actual number to print out.
+ * @param base Base t print out number in. Most comman are 2, 10 and 16.
+ * @param min_width Minimum field width.
+ * @param precision Minimum number of digits to represent the integer.
+ * @param neg Non-zero if a minus sign should be added. Determined by the
+              conversion parser.
+ * @retval 0 on succes
+ * @retval -1 on failure
+ */
 static int
 print_sil(SPE_FILE *fd, signed long number, int base,
 	  int min_width, int precision)
@@ -113,6 +212,23 @@ print_sil(SPE_FILE *fd, signed long number, int base,
 } /* print_sil */
 
 
+/**
+ * \b print_ui
+ *
+ * This is an internal function not for use by application code.
+ *
+ * Print unsigned integer to fd.
+ *
+ * @param fd Pointer to filedescriptor to output result to.
+ * @param number The actual number to print out.
+ * @param base Base t print out number in. Most comman are 2, 10 and 16.
+ * @param min_width Minimum field width.
+ * @param precision Minimum number of digits to represent the integer.
+ * @param neg Non-zero if a minus sign should be added. Determined by the
+              conversion parser.
+ * @retval 0 on succes
+ * @retval -1 on failure
+ */
 static int
 print_ui(SPE_FILE *fd, unsigned int number, int base,
 	 int min_width, int precision, int neg)
@@ -172,7 +288,24 @@ print_ui(SPE_FILE *fd, unsigned int number, int base,
     return 0;
 } /* print_ui */
 
-
+/**
+ * \b print_si
+ *
+ * This is an internal function not for use by application code.
+ *
+ * Print signed integer to fd.
+ *
+ * @param fd Pointer to filedescriptor to output result to.
+ * @param number The actual number to print out.
+ * @param base Base t print out number in. Most comman are 2, 10 and 16.
+ * @param min_width Minimum field width.
+ * @param precision Minimum number of digits to represent the integer.
+ * @param neg Non-zero if a minus sign should be added. Determined by the
+ conversion parser.
+ *
+ * @retval 0 on succes
+ * @retval -1 on failure
+ */
 static int
 print_si(SPE_FILE *fd, signed int number, int base, int min_width, int precision)
 {
@@ -187,6 +320,22 @@ print_si(SPE_FILE *fd, signed int number, int base, int min_width, int precision
 } /* print_si */
 
 
+/**
+ * \b print_d
+ *
+ * This is an internal function not for use by application code.
+ * Only included if USE_DOUBLE is defined.
+ *
+ * Print doubles to fd.
+ *
+ * @param fd Pointer to filedescriptor to output result to.
+ * @param fp The actual number to print out.
+ * @param min_width Minimum field width.
+ * @param precision Minimum number of digits to represent the integer.
+ *
+ * @retval 0 on succes
+ * @retval -1 on failure
+ */
 #ifdef USE_DOUBLE
 #define DOUBLE_DEFAULT_PRECISION 6
 static int
@@ -238,6 +387,19 @@ print_d(SPE_FILE *fd, double fp, int min_width, int precision)
 #endif /* USE_DOUBLE */
 
 
+/**
+ * \b print_string
+ *
+ * This is an internal function not for use by application code.
+ *
+ * Print string to fd one character at a time.
+ *
+ * @param fd Pointer to filedescriptor to output result to.
+ * @param string The actual string to print out.
+ *
+ * @retval 0 on succes
+ * @retval -1 on failure
+ */
 static int
 print_string(SPE_FILE *fd, char *string)
 {
@@ -251,6 +413,22 @@ print_string(SPE_FILE *fd, char *string)
 } /* print_string */
 
 
+/**
+ * \b conversion
+ *
+ * This is an internal function not for use by application code.
+ *
+ * Conversion
+ * Format string resolver.
+ *
+ * @param fd Pointer to filedescriptor to output result to.
+ * @param fmt The format string to use when formatting output.
+ * @param i Index in fmt string we're trying to resolve.
+ * @param ap Variable argument list to the print command
+ *
+ * @retval 0 on succes
+ * @retval -1 on failure
+ */
 static int
 conversion(SPE_FILE *fd, const char *fmt, int i, va_list ap)
 {
@@ -258,7 +436,7 @@ conversion(SPE_FILE *fd, const char *fmt, int i, va_list ap)
     int min_width = 0;
     int precision = 0;
 
-    /* Read in eventual minimum width given as first paramter after % */
+    /* Read in eventual minimum width given as first parameter after % */
     while ((fmt[i + 1] >= '0') && (fmt[i + 1] <= '9')) {
 	min_width *= 10;
 	min_width += (fmt[i + 1] - '0');
@@ -336,6 +514,75 @@ conversion(SPE_FILE *fd, const char *fmt, int i, va_list ap)
 } /* conversion */
 
 
+/**@name General versions */
+/**@{*/
+/**
+ * \b spe_fprintf
+ *
+ * Refer to fprintf() in libc.
+ *
+ * @param fd A pointer to the file descriptor.
+ * @param fmt Format string for formatting the text.
+ * @param ... A list of parameters to be displayed.
+ *
+ * @retval 0 On succes
+ * @retval -1 On failure
+ */
+int
+spe_fprintf(SPE_FILE *fd, const char *fmt, ...)
+{
+    va_list ap;
+    int returned;
+
+    va_start(ap, fmt);
+    returned = spe_vfprintf(fd, fmt, ap);
+    va_end(ap);
+
+    return returned;
+} /* spe_fprintf */
+
+
+/**
+ * \b spe_printf
+ *
+ * Refer to printf() in libc.
+ * Note that spe_stdout must have been defined.
+ *
+ * @param fmt Format string for formatting the text.
+ * @param ... A list of parameters to be displayed.
+ *
+ * @retval 0 On succes
+ * @retval -1 On failure
+ */
+int
+spe_printf(const char *fmt, ...)
+{
+    va_list ap;
+    int returned;
+
+    va_start(ap, fmt);
+    returned = spe_vfprintf(spe_stdout, fmt, ap);
+    va_end(ap);
+
+    return returned;
+} /* spe_printf */
+/**@}*/
+
+
+/**@name Variadic versions */
+/**@{*/
+/**
+ * \b spe_vfprintf
+ * 
+ * Refer to vfprintf() in libc.
+ *
+ * @param fd A pointer to the file descriptor.
+ * @param fmt Format string for formatting the text.
+ * @param ap A list of parameters in va_list format.
+ *
+ * @retval 0 On succes
+ * @retval -1 On failure
+ */
 int
 spe_vfprintf(SPE_FILE *fd, const char *fmt, va_list ap)
 {
@@ -355,36 +602,22 @@ spe_vfprintf(SPE_FILE *fd, const char *fmt, va_list ap)
 } /* spe_vfprintf */
 
 
+/**
+ * \b spe_vprintf
+ *
+ * Refer to vprintf() in libc.
+ * Note that spe_stdout must have been defined. \n
+ *
+ * @param fmt Format string for formatting the text.
+ * @param ap A list of parameters in va_list format.
+ *
+ * @retval 0 On succes
+ * @retval -1 On failure
+ */
 int
 spe_vprintf(const char *fmt, va_list ap)
 {
     return spe_vfprintf(spe_stdout, fmt, ap);
 } /* spe_vprintf */
 
-
-int
-spe_fprintf(SPE_FILE *fd, const char *fmt, ...)
-{
-    va_list ap;
-    int returned;
-
-    va_start(ap, fmt);
-    returned = spe_vfprintf(fd, fmt, ap);
-    va_end(ap);
-
-    return returned;
-} /* spe_fprintf */
-
-
-int
-spe_printf(const char *fmt, ...)
-{
-    va_list ap;
-    int returned;
-
-    va_start(ap, fmt);
-    returned = spe_vfprintf(spe_stdout, fmt, ap);
-    va_end(ap);
-
-    return returned;
-} /* spe_fprintf */
+/**@}*/

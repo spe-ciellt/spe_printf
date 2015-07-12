@@ -26,15 +26,32 @@
 #include <stdio.h>
 #include "spe_printf.h"
 
+/**
+ * \file
+ *
+ * Sample implementation using spe_printf() routines.
+ */
+
+/**
+ * Local version of output one character.
+ *
+ * @param c Character to print out.
+ */
 static void
 myputc(char c)
 {
     putchar(c);
 } /* myputc */
 
+/* Register myputc() in a file descriptor as a callback for spe_printf() */
 SPE_FILE output = SPE_PRINTF_SETUP(myputc);
+
+/* Define the declared filedescriptor as stdout. */
 SPE_FILE *spe_stdout = &output;
 
+/**
+ * Prints out some text using spe_printf()
+ */
 int
 main(int argc, char *argv[])
 {

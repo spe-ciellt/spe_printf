@@ -28,5 +28,9 @@ all: spe_printf-example
 
 spe_printf-example: spe_printf-example.o spe_printf.o
 
+# Generate Doxygen documentation
+doxygen:
+	doxygen ./Doxyfile
+
 clean:
-	rm -f *~ *.o spe_printf-example
+	rm -rf *~ *.o docs spe_printf-example
