@@ -566,6 +566,34 @@ spe_printf(const char *fmt, ...)
 
     return returned;
 } /* spe_printf */
+
+
+/**
+ * \b spe_snprintf
+ *
+ * Refer to snprintf() in libc.
+ * Prints text to a string.
+ *
+ * @param str Pointer to string to be written to.
+ * @param size Maximum number to be written to, including terminating \0
+ * @param fmt Format string for formatting the text.
+ * @param ... A list of parameters to be displayed.
+ *
+ * @retval Number of characters written, including terminating \0
+ */
+int
+spe_snprintf(char *str, size_t size, const char *fmt, ...)
+{
+    va_list ap;
+    int returned;
+
+    va_start(ap, fmt);
+    returned = spe_vsnprintf(str, size, fmt, ap);
+    va_end(ap);
+
+    return returned;
+} /* spe_snprintf */
+
 /**@}*/
 
 
@@ -619,5 +647,31 @@ spe_vprintf(const char *fmt, va_list ap)
 {
     return spe_vfprintf(spe_stdout, fmt, ap);
 } /* spe_vprintf */
+
+
+/**
+ * \b spe_vsnprintf
+ *
+ * Refer to vsnprintf() in libc.
+ * Prints text to a string.
+ *
+ * @param str Pointer to string to be written to.
+ * @param size Maximum number to be written to, including terminating \0
+ * @param fmt Format string for formatting the text.
+ * @param ap A list of parameters in va_list format.
+ *
+ * @retval Number of characters written, including terminating \0
+ */
+
+int
+spe_vsnprintf(char *str, size_t size, const char *fmt, va_list ap)
+{
+    (void)str;
+    (void)size;
+    (void)fmt;
+    (void)ap;
+
+    return 13;
+} /* spe_vsnprintf */
 
 /**@}*/

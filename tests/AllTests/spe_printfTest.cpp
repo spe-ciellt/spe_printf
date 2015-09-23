@@ -143,3 +143,31 @@ TEST(spe_printf, SmallDecimalDouble)
 {
     do_comparison("[%f] and [%7.2f]", 12.0034, -43.21);
 }
+
+TEST(spe_printf, snprintfFirstTest)
+{
+    char string[13];
+    LONGS_EQUAL(13, spe_snprintf(string, 13, "Hello World!"));
+    STRCMP_EQUAL("Hello World!", string);
+}
+
+TEST(spe_printf, snprintfTooShort)
+{
+    char string[10];
+    LONGS_EQUAL(10, spe_snprintf(string, 10, "Hello World!"));
+    STRCMP_EQUAL("Hello Wor", string);
+}
+
+TEST(spe_printf, snprintfTooLong)
+{
+    char string[15];
+    LONGS_EQUAL(13, spe_snprintf(string, 15, "Hello World!"));
+    STRCMP_EQUAL("Hello World!", string);
+}
+
+TEST(spe_printf, snprintfTooShortWithdata)
+{
+    char string[15];
+    LONGS_EQUAL(15, spe_snprintf(string, 15, "Hello World!%d", 1234));
+    STRCMP_EQUAL("Hello World!12", string);
+}
