@@ -10,7 +10,9 @@ It supports:
 * long modifier.
 * plain percent (%), character (c), string (s), signed integer, 
   unsigned integer(u), hex (x) and binary (b).
-* double if compiled in, see below
+* double if compiled in, see below.
+* Includes variadic versions of all printf() functions.
+* Includes snprintf()/vsnprintf() versions to print to strings.
 
 It does not support:
 * minimal width and optional precision for strings.
@@ -19,7 +21,7 @@ It does not support:
 
 double()
 ==
-It can print doubles also. Then the variable USE_DOUBLE needs to be set
+It can print doubles too. Then the variable USE_DOUBLE needs to be set
 when compiling, by for instance adding *CFLAGS+=-DUSE_DOUBLE* in the Makefile.
 When including usage of double, math.h and math lib is necessary. Using just
 casting to change one part (integer or decimal) of the double to an int lost
