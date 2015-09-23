@@ -118,8 +118,8 @@ print_char(SPE_FILE *fd, char c)
  * @param precision Minimum number of digits to represent the integer.
  * @param neg Non-zero if a minus sign should be added. Determined by the
               conversion parser.
- * @retval 0 on succes
- * @retval -1 on failure
+ * @retval 0 on success.
+ * @retval -1 on failure.
  */
 static int
 print_uil(SPE_FILE *fd, unsigned long number, int base,
@@ -194,8 +194,8 @@ print_uil(SPE_FILE *fd, unsigned long number, int base,
  * @param precision Minimum number of digits to represent the integer.
  * @param neg Non-zero if a minus sign should be added. Determined by the
               conversion parser.
- * @retval 0 on succes
- * @retval -1 on failure
+ * @retval 0 on success.
+ * @retval -1 on failure.
  */
 static int
 print_sil(SPE_FILE *fd, signed long number, int base,
@@ -226,8 +226,8 @@ print_sil(SPE_FILE *fd, signed long number, int base,
  * @param precision Minimum number of digits to represent the integer.
  * @param neg Non-zero if a minus sign should be added. Determined by the
               conversion parser.
- * @retval 0 on succes
- * @retval -1 on failure
+ * @retval 0 on success.
+ * @retval -1 on failure.
  */
 static int
 print_ui(SPE_FILE *fd, unsigned int number, int base,
@@ -303,8 +303,8 @@ print_ui(SPE_FILE *fd, unsigned int number, int base,
  * @param neg Non-zero if a minus sign should be added. Determined by the
  conversion parser.
  *
- * @retval 0 on succes
- * @retval -1 on failure
+ * @retval 0 on success.
+ * @retval -1 on failure.
  */
 static int
 print_si(SPE_FILE *fd, signed int number, int base, int min_width, int precision)
@@ -333,8 +333,8 @@ print_si(SPE_FILE *fd, signed int number, int base, int min_width, int precision
  * @param min_width Minimum field width.
  * @param precision Minimum number of digits to represent the integer.
  *
- * @retval 0 on succes
- * @retval -1 on failure
+ * @retval 0 on success.
+ * @retval -1 on failure.
  */
 #ifdef USE_DOUBLE
 #define DOUBLE_DEFAULT_PRECISION 6
@@ -397,8 +397,8 @@ print_d(SPE_FILE *fd, double fp, int min_width, int precision)
  * @param fd Pointer to filedescriptor to output result to.
  * @param string The actual string to print out.
  *
- * @retval 0 on succes
- * @retval -1 on failure
+ * @retval 0 on success.
+ * @retval -1 on failure.
  */
 static int
 print_string(SPE_FILE *fd, char *string)
@@ -426,8 +426,8 @@ print_string(SPE_FILE *fd, char *string)
  * @param i Index in fmt string we're trying to resolve.
  * @param ap Variable argument list to the print command
  *
- * @retval 0 on succes
- * @retval -1 on failure
+ * @retval 0 on success.
+ * @retval -1 on failure.
  */
 static int
 conversion(SPE_FILE *fd, const char *fmt, int i, va_list ap)
@@ -525,8 +525,8 @@ conversion(SPE_FILE *fd, const char *fmt, int i, va_list ap)
  * @param fmt Format string for formatting the text.
  * @param ... A list of parameters to be displayed.
  *
- * @retval 0 On succes
- * @retval -1 On failure
+ * @retval 0 On success.
+ * @retval -1 On failure.
  */
 int
 spe_fprintf(SPE_FILE *fd, const char *fmt, ...)
@@ -551,8 +551,8 @@ spe_fprintf(SPE_FILE *fd, const char *fmt, ...)
  * @param fmt Format string for formatting the text.
  * @param ... A list of parameters to be displayed.
  *
- * @retval 0 On succes
- * @retval -1 On failure
+ * @retval 0 On success.
+ * @retval -1 On failure.
  */
 int
 spe_printf(const char *fmt, ...)
@@ -580,8 +580,8 @@ spe_printf(const char *fmt, ...)
  * @param fmt Format string for formatting the text.
  * @param ap A list of parameters in va_list format.
  *
- * @retval 0 On succes
- * @retval -1 On failure
+ * @retval 0 On success.
+ * @retval -1 On failure.
  */
 int
 spe_vfprintf(SPE_FILE *fd, const char *fmt, va_list ap)
@@ -611,8 +611,8 @@ spe_vfprintf(SPE_FILE *fd, const char *fmt, va_list ap)
  * @param fmt Format string for formatting the text.
  * @param ap A list of parameters in va_list format.
  *
- * @retval 0 On succes
- * @retval -1 On failure
+ * @retval 0 On success.
+ * @retval -1 On failure.
  */
 int
 spe_vprintf(const char *fmt, va_list ap)
