@@ -27,6 +27,8 @@
 /* For the variadic versions of the functions. */
 #include <stdarg.h>
 
+#include <stddef.h> /* size_t */
+
 /**
  * File descriptor declaration. Use macro SPE_FILE for declaration.\n
  * Don't modify directly, use accessor below. \n
@@ -34,6 +36,9 @@
  */
 struct spe_fd {
     void (*putc)(char c); /*!< Callback function */
+    char *str;            /*!< String to store to for snprintf */
+    size_t max;           /*!< Max number of chars in that string */
+    size_t curr;          /*!< Current index in that string */
 };
 
 /**
@@ -47,7 +52,10 @@ struct spe_fd {
  */
 #define SPE_PRINTF_SETUP(p) \
     { \
-	.putc = p, \
+        .putc = p,    \
+        .str  = NULL, \
+        .max  = 0, \
+        .curr = 0, \
     }
 
 

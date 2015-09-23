@@ -101,7 +101,14 @@ static const char tohex[] = "0123456789abcdef";
 static void
 print_char(SPE_FILE *fd, char c)
 {
-    fd->putc(c);
+    if (fd->putc) {
+        fd->putc(c);
+    }
+    if (fd->str) {
+        if (fd->curr < (fd->max - 1)) {
+            fd->str[fd->curr++] = c;
+        }
+    }
 } /* print_char */
 
 /**
@@ -575,11 +582,13 @@ spe_printf(const char *fmt, ...)
  * Prints text to a string.
  *
  * @param str Pointer to string to be written to.
- * @param size Maximum number to be written to, including terminating \0
+ * @param size Maximum number of characters to be written to the string,
+ *          including terminating \0.
  * @param fmt Format string for formatting the text.
  * @param ... A list of parameters to be displayed.
  *
- * @retval Number of characters written, including terminating \0
+ * @retval >=0 Number of characters written, including terminating \0.
+ * @retval -1 On failure.
  */
 int
 spe_snprintf(char *str, size_t size, const char *fmt, ...)
@@ -656,22 +665,31 @@ spe_vprintf(const char *fmt, va_list ap)
  * Prints text to a string.
  *
  * @param str Pointer to string to be written to.
- * @param size Maximum number to be written to, including terminating \0
+ * @param size Maximum number of characters to be written to the string,
+ *          including terminating \0.
  * @param fmt Format string for formatting the text.
  * @param ap A list of parameters in va_list format.
  *
- * @retval Number of characters written, including terminating \0
+ * @retval >=0 Number of characters written, including terminating \0.
+ * @retval -1 On failure.
  */
 
 int
 spe_vsnprintf(char *str, size_t size, const char *fmt, va_list ap)
 {
-    (void)str;
-    (void)size;
-    (void)fmt;
-    (void)ap;
+    SPE_FILE strfd = {
+        .putc = NULL,
+        .str = str,
+        .max = size,
+        .curr = 0,
+    };
 
-    return 13;
+    if (spe_vfprintf(&strfd, fmt, ap) < 0) {
+        return -1;
+    }
+    strfd.str[strfd.curr++] = '\0';
+
+    return strfd.curr;
 } /* spe_vsnprintf */
 
 /**@}*/
