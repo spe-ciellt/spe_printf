@@ -50,18 +50,18 @@ struct spe_fd {
  * Register the print out one character callback function.
  * The callback function is defined as \code void putc(char c) \endcode.
  */
-#define SPE_PRINTF_SETUP(p) \
-    { \
-        .putc = p,    \
-        .str  = NULL, \
-        .max  = 0, \
-        .curr = 0, \
+#define SPE_PRINTF_SETUP(p)                     \
+    {                                           \
+        .putc = p,                              \
+        .str  = NULL,                           \
+        .max  = 0,                              \
+        .curr = 0,                              \
     }
 
 
 /**
  * \b spe_stdout
- * 
+ *
  * Defines stdout in the spe_print library. Must be defined
  * before spe_printf() et al can be used. For example on how to declare and
  * use, see spe_printf-example.c.
@@ -70,7 +70,7 @@ extern SPE_FILE *spe_stdout;
 
 /**
  * \b spe_stderr
- * 
+ *
  * Defines stderr in the spe_print library. For example on how to declare and
  * use, see spe_printf-example.c.
  */
