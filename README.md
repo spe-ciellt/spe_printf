@@ -63,7 +63,7 @@ character by character.
 
 Another advantage of not using any internal buffers (except it saves precious
 RAM) is that it could be considered reentrant. Great news if you intend to
-use an RTOS, for instance [AtomThreads](http://atomthreads.com/).
+use an RTOS, for instance.
 
 License
 ==
@@ -75,7 +75,7 @@ You can probably optimize some bytes here and there, since I used int
 through out the source code. You can probably also use the stdint.h 
 types (uint32_t et al) to make it more portable.
 The functions print_uil() and print_ui() are almost the same, though one
-are for long and the other for int. print_ui() can probably be optimimized
+are for long and the other for int. print_ui() can probably be optimized
 away and only print_uil() be used if necessary. print_ui() is left if a need
 to remove usage of long completely is necessary.
 
