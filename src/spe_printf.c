@@ -99,7 +99,7 @@
 static const char tohex[] = "0123456789abcdef";
 
 static void
-print_char(SPE_FILE *fd, char c)
+print_char(SPE_FILE *fd, const char c)
 {
     if (fd->putc) {
         fd->putc(c);
@@ -129,8 +129,8 @@ print_char(SPE_FILE *fd, char c)
  * @retval -1 on failure.
  */
 static int
-print_uil(SPE_FILE *fd, unsigned long number, int base,
-          int min_width, int precision, int neg)
+print_uil(SPE_FILE *fd, unsigned long number, const int base,
+          int min_width, const int precision, int neg)
 {
     unsigned long divider = 1UL;
     unsigned long digit = 0UL;
@@ -205,8 +205,8 @@ print_uil(SPE_FILE *fd, unsigned long number, int base,
  * @retval -1 on failure.
  */
 static int
-print_sil(SPE_FILE *fd, signed long number, int base,
-          int min_width, int precision)
+print_sil(SPE_FILE *fd, signed long number, const int base,
+          const int min_width, const int precision)
 {
     int neg = 0;
 
@@ -408,7 +408,7 @@ print_d(SPE_FILE *fd, double fp, int min_width, int precision)
  * @retval -1 on failure.
  */
 static int
-print_string(SPE_FILE *fd, char *string)
+print_string(SPE_FILE *fd, const char *string)
 {
     int i;
 
@@ -437,7 +437,7 @@ print_string(SPE_FILE *fd, char *string)
  * @retval -1 on failure.
  */
 static int
-conversion(SPE_FILE *fd, const char *fmt, int i, va_list ap)
+conversion(SPE_FILE *fd, const char *fmt, int i, const va_list ap)
 {
     int long_modifier = 0;
     int min_width = 0;
@@ -591,7 +591,7 @@ spe_printf(const char *fmt, ...)
  * @retval -1 On failure.
  */
 int
-spe_snprintf(char *str, size_t size, const char *fmt, ...)
+spe_snprintf(char *str, const size_t size, const char *fmt, ...)
 {
     va_list ap;
     int returned;
@@ -621,7 +621,7 @@ spe_snprintf(char *str, size_t size, const char *fmt, ...)
  * @retval -1 On failure.
  */
 int
-spe_vfprintf(SPE_FILE *fd, const char *fmt, va_list ap)
+spe_vfprintf(SPE_FILE *fd, const char *fmt, const va_list ap)
 {
     int i;
 
@@ -652,7 +652,7 @@ spe_vfprintf(SPE_FILE *fd, const char *fmt, va_list ap)
  * @retval -1 On failure.
  */
 int
-spe_vprintf(const char *fmt, va_list ap)
+spe_vprintf(const char *fmt, const va_list ap)
 {
     return spe_vfprintf(spe_stdout, fmt, ap);
 } /* spe_vprintf */
@@ -675,7 +675,7 @@ spe_vprintf(const char *fmt, va_list ap)
  */
 
 int
-spe_vsnprintf(char *str, size_t size, const char *fmt, va_list ap)
+spe_vsnprintf(char *str, const size_t size, const char *fmt, const va_list ap)
 {
     SPE_FILE strfd = {
         .putc = NULL,
