@@ -40,7 +40,7 @@ TARGET_PLATFORM = $(TARGET)-linux-gnu
 TOPDIR = $(shell dirname `pwd`)
 
 CPPUTEST_USE_EXTENSIONS = Y
-CPPUTEST_WARNINGFLAGS =  -Wall -Wextra -Werror -Wshadow -Wswitch-default -Wswitch-enum
+CPPUTEST_WARNINGFLAGS =  -Wall -Wextra -Werror -Wshadow -Wswitch-default -Wswitch-enum -Wcast-qual -Wsign-compare -Wconversion
 CPPUTEST_ADDITIONAL_CFLAGS = -DUSE_DOUBLE
 CPPUTEST_LDFLAGS = -lm
 

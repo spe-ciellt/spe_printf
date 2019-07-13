@@ -132,8 +132,8 @@ static int
 print_uil(SPE_FILE *fd, unsigned long number, int base,
           int min_width, int precision, int neg)
 {
-    unsigned long divider = 1;
-    int digit = 0;
+    unsigned long divider = 1UL;
+    unsigned long digit = 0UL;
     int nuf_digits = 1;
 
     /* Find the biggest number dividable by base to use as starting
@@ -178,7 +178,7 @@ print_uil(SPE_FILE *fd, unsigned long number, int base,
         digit = number / divider;
         print_char(fd, tohex[digit]);
         number = number - (digit * divider);
-        divider /= base;
+        divider /= (unsigned long)base;
         if (divider == 0L) {
             break;
         }
@@ -240,14 +240,14 @@ static int
 print_ui(SPE_FILE *fd, unsigned int number, int base,
          int min_width, int precision, int neg)
 {
-    unsigned int divider = 1;
-    int digit = 0;
+    unsigned long divider = 1UL;
+    unsigned long digit = 0UL;
     int nuf_digits = 1;
 
     /* Find the biggest number dividable by base to use as starting
        point for dividing down character by character*/
     while ((number / divider) >= (unsigned int)base){
-        divider *= base;
+        divider *= (unsigned long)base;
         nuf_digits++;
         if (divider == 0L) {
             return -1;
@@ -285,8 +285,8 @@ print_ui(SPE_FILE *fd, unsigned int number, int base,
     while (1) {
         digit = number / divider;
         print_char(fd, tohex[digit]);
-        number = number - (digit * divider);
-        divider /= base;
+        number = number - (unsigned int)(digit * divider);
+        divider /= (unsigned long)base;
         if (divider == 0L) {
             break;
         }
@@ -348,7 +348,7 @@ print_si(SPE_FILE *fd, signed int number, int base, int min_width, int precision
 static int
 print_d(SPE_FILE *fd, double fp, int min_width, int precision)
 {
-    int ii, id;
+    unsigned int ii, id;
     int n;
     int neg = 0;
     double pm, tmp;
@@ -371,9 +371,9 @@ print_d(SPE_FILE *fd, double fp, int min_width, int precision)
     for (pm = 1.0, n = 0; n != precision; n++, pm *= 10.0);
 
     /* Split double into integer integer and integer decimal */
-    ii = (int)fp;
-    tmp = fp  * pm - truncf(fp) * pm;
-    id = (int)tmp;
+    ii = (unsigned int)fp;
+    tmp = fp  * pm - trunc(fp) * pm;
+    id = (unsigned int)tmp;
 
     /* Punctuation is included in the min_width */
     min_width -= 1;
@@ -458,7 +458,7 @@ conversion(SPE_FILE *fd, const char *fmt, int i, va_list ap)
             return i;
             break;
         case 'c': /* Character */
-            print_char(fd, va_arg(ap, int));
+            print_char(fd, (char)va_arg(ap, int));
             return i;
         case 's': /* String */
             print_string(fd, va_arg(ap, char*));
@@ -689,7 +689,7 @@ spe_vsnprintf(char *str, size_t size, const char *fmt, va_list ap)
     }
     strfd.str[strfd.curr++] = '\0';
 
-    return strfd.curr;
+    return (int)strfd.curr;
 } /* spe_vsnprintf */
 
 /**@}*/
