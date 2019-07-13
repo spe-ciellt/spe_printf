@@ -33,7 +33,10 @@ endif
 
 #--- Inputs ----#
 COMPONENT_NAME = spe_printf
-CPPUTEST_HOME = $(HOME)/tools/cpputest
+CPPUTEST_HOME = /usr
+CPPUTEST_SCRIPTS = share/cpputest
+TARGET = $(shell uname -m)
+TARGET_PLATFORM = $(TARGET)-linux-gnu
 TOPDIR = $(shell dirname `pwd`)
 
 CPPUTEST_USE_EXTENSIONS = Y
