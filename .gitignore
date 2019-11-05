@@ -1,3 +1,8 @@
+# Crap files
+*~
+#*
+.#*
+
 # Object files
 *.o
 
