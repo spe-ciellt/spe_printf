@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2013-2015 Stefan Petersen, Ciellt AB
+# Copyright (c) 2013-2019 Stefan Petersen, Ciellt AB
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
