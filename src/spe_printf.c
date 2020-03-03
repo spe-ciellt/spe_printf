@@ -133,7 +133,6 @@ print_uil(SPE_FILE *fd, unsigned long number, const int base,
           int min_width, const int precision, int neg)
 {
     unsigned long divider = 1UL;
-    unsigned long digit = 0UL;
     int nuf_digits = 1;
 
     /* Find the biggest number dividable by base to use as starting
@@ -175,7 +174,7 @@ print_uil(SPE_FILE *fd, unsigned long number, const int base,
     /* Print out character by character by using the divider we just found. */
     /* This is the secret sauce to this no-buffering print routine. */
     while (1) {
-        digit = number / divider;
+        unsigned long digit = number / divider;
         print_char(fd, tohex[digit]);
         number = number - (digit * divider);
         divider /= (unsigned long)base;
@@ -241,7 +240,6 @@ print_ui(SPE_FILE *fd, unsigned int number, int base,
          int min_width, int precision, int neg)
 {
     unsigned long divider = 1UL;
-    unsigned long digit = 0UL;
     int nuf_digits = 1;
 
     /* Find the biggest number dividable by base to use as starting
@@ -283,7 +281,7 @@ print_ui(SPE_FILE *fd, unsigned int number, int base,
     /* Print out character by character by using the divider we just found. */
     /* This is the secret sauce to this no-buffering print routine. */
     while (1) {
-        digit = number / divider;
+        unsigned long digit = number / divider;
         print_char(fd, tohex[digit]);
         number = number - (unsigned int)(digit * divider);
         divider /= (unsigned long)base;
