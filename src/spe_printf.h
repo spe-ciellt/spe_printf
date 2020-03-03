@@ -24,6 +24,10 @@
 #ifndef SPE_PRINTF_H
 #define SPE_PRINTF_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* For the variadic versions of the functions. */
 #include <stdarg.h>
 
@@ -96,5 +100,9 @@ int spe_snprintf(char *str, const size_t size, const char *fmt, ...);
 int spe_vfprintf(SPE_FILE *fd, const char *fmt, const va_list ap);
 int spe_vprintf(const char *fmt, const va_list ap);
 int spe_vsnprintf(char *str, const size_t size, const char *fmt, const va_list ap);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* SPE_PRINTF_H */
