@@ -97,9 +97,9 @@ extern SPE_FILE *spe_stderr;
 int spe_fprintf(SPE_FILE *fd, const char *fmt, ...);
 int spe_printf(const char *fmt, ...);
 int spe_snprintf(char *str, const size_t size, const char *fmt, ...);
-int spe_vfprintf(SPE_FILE *fd, const char *fmt, const va_list ap);
-int spe_vprintf(const char *fmt, const va_list ap);
-int spe_vsnprintf(char *str, const size_t size, const char *fmt, const va_list ap);
+int spe_vfprintf(SPE_FILE *fd, const char *fmt, va_list ap);
+int spe_vprintf(const char *fmt, va_list ap);
+int spe_vsnprintf(char *str, const size_t size, const char *fmt, va_list ap);
 
 #ifdef __cplusplus
 }
