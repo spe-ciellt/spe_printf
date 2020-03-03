@@ -85,6 +85,13 @@ TEST(spe_printf, HexIntegers)
 }
 
 /* Not supported by libc printf */
+TEST(spe_printf, NewTest)
+{
+    LONGS_EQUAL(0, spe_printf("k%u,%u", 1,2));
+    STRCMP_EQUAL("k1,2", output_mock_get_string());
+}
+
+/* Not supported by libc printf */
 TEST(spe_printf, BinaryIntegers)
 {
     spe_printf("%16.16b", 0x0f0f);
@@ -142,6 +149,11 @@ TEST(spe_printf, PositivAndNegativeDouble)
 TEST(spe_printf, SmallDecimalDouble)
 {
     do_comparison("[%f] and [%7.2f]", 12.0034, -43.21);
+}
+
+TEST(spe_printf, SeveralCharacters)
+{
+    do_comparison("%u,%u", 1, 2);
 }
 
 TEST(spe_printf, snprintfFirstTest)
