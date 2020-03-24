@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2019 Stefan Petersen, Ciellt AB
+ * Copyright (c) 2013-2020 Stefan Petersen, Ciellt AB
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -23,6 +23,10 @@
 
 #ifndef SPE_PRINTF_H
 #define SPE_PRINTF_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* For the variadic versions of the functions. */
 #include <stdarg.h>
@@ -93,8 +97,12 @@ extern SPE_FILE *spe_stderr;
 int spe_fprintf(SPE_FILE *fd, const char *fmt, ...);
 int spe_printf(const char *fmt, ...);
 int spe_snprintf(char *str, const size_t size, const char *fmt, ...);
-int spe_vfprintf(SPE_FILE *fd, const char *fmt, const va_list ap);
-int spe_vprintf(const char *fmt, const va_list ap);
-int spe_vsnprintf(char *str, const size_t size, const char *fmt, const va_list ap);
+int spe_vfprintf(SPE_FILE *fd, const char *fmt, va_list ap);
+int spe_vprintf(const char *fmt, va_list ap);
+int spe_vsnprintf(char *str, const size_t size, const char *fmt, va_list ap);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* SPE_PRINTF_H */

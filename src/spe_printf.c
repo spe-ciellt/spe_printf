@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2019 Stefan Petersen, Ciellt AB
+ * Copyright (c) 2013-2020 Stefan Petersen, Ciellt AB
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -133,7 +133,6 @@ print_uil(SPE_FILE *fd, unsigned long number, const int base,
           int min_width, const int precision, int neg)
 {
     unsigned long divider = 1UL;
-    unsigned long digit = 0UL;
     int nuf_digits = 1;
 
     /* Find the biggest number dividable by base to use as starting
@@ -175,7 +174,7 @@ print_uil(SPE_FILE *fd, unsigned long number, const int base,
     /* Print out character by character by using the divider we just found. */
     /* This is the secret sauce to this no-buffering print routine. */
     while (1) {
-        digit = number / divider;
+        unsigned long digit = number / divider;
         print_char(fd, tohex[digit]);
         number = number - (digit * divider);
         divider /= (unsigned long)base;
@@ -241,7 +240,6 @@ print_ui(SPE_FILE *fd, unsigned int number, int base,
          int min_width, int precision, int neg)
 {
     unsigned long divider = 1UL;
-    unsigned long digit = 0UL;
     int nuf_digits = 1;
 
     /* Find the biggest number dividable by base to use as starting
@@ -283,7 +281,7 @@ print_ui(SPE_FILE *fd, unsigned int number, int base,
     /* Print out character by character by using the divider we just found. */
     /* This is the secret sauce to this no-buffering print routine. */
     while (1) {
-        digit = number / divider;
+        unsigned long digit = number / divider;
         print_char(fd, tohex[digit]);
         number = number - (unsigned int)(digit * divider);
         divider /= (unsigned long)base;
@@ -437,7 +435,7 @@ print_string(SPE_FILE *fd, const char *string)
  * @retval -1 on failure.
  */
 static int
-conversion(SPE_FILE *fd, const char *fmt, int i, const va_list ap)
+conversion(SPE_FILE *fd, const char *fmt, int i, const va_list *ap)
 {
     int long_modifier = 0;
     int min_width = 0;
@@ -458,17 +456,17 @@ conversion(SPE_FILE *fd, const char *fmt, int i, const va_list ap)
             return i;
             break;
         case 'c': /* Character */
-            print_char(fd, (char)va_arg(ap, int));
+            print_char(fd, (char)va_arg(*ap, int));
             return i;
         case 's': /* String */
-            print_string(fd, va_arg(ap, char*));
+            print_string(fd, va_arg(*ap, char*));
             return i;
         case 'd': /* Signed integer and long */
             if (long_modifier) {
                 long_modifier = 0;
-                print_sil(fd, va_arg(ap, long), 10, min_width, precision);
+                print_sil(fd, va_arg(*ap, long), 10, min_width, precision);
             } else {
-                print_si(fd, va_arg(ap, int), 10, min_width, precision);
+                print_si(fd, va_arg(*ap, int), 10, min_width, precision);
             }
             return i;
         case 'l': /* long modifier, used with u and d */
@@ -477,22 +475,22 @@ conversion(SPE_FILE *fd, const char *fmt, int i, const va_list ap)
         case 'u': /* Unsigned integer and long */
             if (long_modifier) {
                 long_modifier = 0;
-                print_uil(fd, va_arg(ap, unsigned long), 10,
+                print_uil(fd, va_arg(*ap, unsigned long), 10,
                           min_width, precision, 0);
             } else {
-                print_ui(fd, va_arg(ap, unsigned int), 10,
+                print_ui(fd, va_arg(*ap, unsigned int), 10,
                          min_width, precision, 0);
             }
             return i;
         case 'x': /* Hex */
-            print_ui(fd, va_arg(ap, unsigned int), 16, min_width, precision, 0);
+            print_ui(fd, va_arg(*ap, unsigned int), 16, min_width, precision, 0);
             return i;
         case 'b': /* Binary */
-            print_ui(fd, va_arg(ap, unsigned int), 2, min_width, precision, 0);
+            print_ui(fd, va_arg(*ap, unsigned int), 2, min_width, precision, 0);
             return i;
 #ifdef USE_DOUBLE
         case 'f':
-            print_d(fd, va_arg(ap, double), min_width, precision);
+            print_d(fd, va_arg(*ap, double), min_width, precision);
             return i;
 #else
             return -1;
@@ -621,13 +619,21 @@ spe_snprintf(char *str, const size_t size, const char *fmt, ...)
  * @retval -1 On failure.
  */
 int
-spe_vfprintf(SPE_FILE *fd, const char *fmt, const va_list ap)
+spe_vfprintf(SPE_FILE *fd, const char *fmt, va_list ap)
 {
     int i;
+    /**
+     * Problems when compiling on a X86/64 which is described here:
+     * Solution is to use a copy, which seems to solve the issue on both
+     * Cortex-M and X86/64.
+     * https://stackoverflow.com/questions/8047362/is-gcc-mishandling-a-pointer-to-a-va-list-passed-to-a-function
+     */
+    va_list ap_copy;
+    va_copy(ap_copy, ap);
 
     for (i = 0; fmt[i]; i++) {
         if (fmt[i] == '%') {
-            if ((i = conversion(fd, fmt, i, ap)) < 0) {
+            if ((i = conversion(fd, fmt, i, &ap_copy)) < 0) {
                 return -1;
             }
         } else {
@@ -652,7 +658,7 @@ spe_vfprintf(SPE_FILE *fd, const char *fmt, const va_list ap)
  * @retval -1 On failure.
  */
 int
-spe_vprintf(const char *fmt, const va_list ap)
+spe_vprintf(const char *fmt, va_list ap)
 {
     return spe_vfprintf(spe_stdout, fmt, ap);
 } /* spe_vprintf */
@@ -675,7 +681,7 @@ spe_vprintf(const char *fmt, const va_list ap)
  */
 
 int
-spe_vsnprintf(char *str, const size_t size, const char *fmt, const va_list ap)
+spe_vsnprintf(char *str, const size_t size, const char *fmt, va_list ap)
 {
     SPE_FILE strfd = {
         .putc = NULL,
