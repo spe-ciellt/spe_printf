@@ -621,7 +621,7 @@ spe_snprintf(char *str, const size_t size, const char *fmt, ...)
 int
 spe_vfprintf(SPE_FILE *fd, const char *fmt, va_list ap)
 {
-    int i;
+    int ret = 0;
     /**
      * Problems when compiling on a X86/64 which is described here:
      * Solution is to use a copy, which seems to solve the issue on both
@@ -631,17 +631,18 @@ spe_vfprintf(SPE_FILE *fd, const char *fmt, va_list ap)
     va_list ap_copy;
     va_copy(ap_copy, ap);
 
-    for (i = 0; fmt[i]; i++) {
+    for (int i = 0; fmt[i]; i++) {
         if (fmt[i] == '%') {
             if ((i = conversion(fd, fmt, i, &ap_copy)) < 0) {
-                return -1;
+                ret = -1;
+                break;
             }
         } else {
             print_char(fd, fmt[i]);
         }
     }
-
-    return 0;
+    va_end(ap_copy);
+    return ret;
 } /* spe_vfprintf */
 
 
