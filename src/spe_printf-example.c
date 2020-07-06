@@ -53,16 +53,12 @@ SPE_FILE *spe_stdout = &output;
  * Prints out some text using spe_printf()
  */
 int
-main(int argc, char *argv[])
+main()
 {
     char msg[] = "Hello World";
     long lv = 1231232312L;
     uint8_t other = 123;
     int r;
-
-    /* Fix stupid compilation warning */
-    argc = argc;
-    argv = argv;
 
     r = spe_printf("Percent:%% string:%s \n", msg);
     assert(r == 0);
