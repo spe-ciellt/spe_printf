@@ -167,7 +167,6 @@ print_uil(SPE_FILE *fd, unsigned long number, const int base,
 
     /* If we didn't print out any minus, do it now. */
     if (neg) {
-        neg = 0;
         print_char(fd, '-');
     }
 
@@ -274,7 +273,6 @@ print_ui(SPE_FILE *fd, unsigned int number, int base,
 
     /* If we didn't print out any minus, do it now. */
     if (neg) {
-        neg = 0;
         print_char(fd, '-');
     }
 
@@ -463,7 +461,6 @@ conversion(SPE_FILE *fd, const char *fmt, int i, const va_list *ap)
             return i;
         case 'd': /* Signed integer and long */
             if (long_modifier) {
-                long_modifier = 0;
                 print_sil(fd, va_arg(*ap, long), 10, min_width, precision);
             } else {
                 print_si(fd, va_arg(*ap, int), 10, min_width, precision);
@@ -474,7 +471,6 @@ conversion(SPE_FILE *fd, const char *fmt, int i, const va_list *ap)
             break;
         case 'u': /* Unsigned integer and long */
             if (long_modifier) {
-                long_modifier = 0;
                 print_uil(fd, va_arg(*ap, unsigned long), 10,
                           min_width, precision, 0);
             } else {
