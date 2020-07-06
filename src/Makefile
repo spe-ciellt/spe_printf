@@ -21,8 +21,10 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 CC=gcc
-CFLAGS=-Wall -Wextra -DUSE_DOUBLE
+CFLAGS=-Wall -Wextra -DUSE_DOUBLE -std=c99
 LDLIBS=-lm
+
+CPPCHECK_TESTS = "--enable=warning,style,performance,portability"
 
 all: spe_printf-example
 
@@ -30,7 +32,12 @@ spe_printf-example: spe_printf-example.o spe_printf.o
 
 # Generate Doxygen documentation
 doxygen:
-	doxygen ./Doxyfile
+	@doxygen ./Doxyfile
+
+# Run cppcheck
+cppcheck:
+	@cppcheck --quiet $(CPPCHECK_TESTS) --std=c99 --platform=unix32 .
+	@cppcheck --quiet -DUSE_DOUBLE $(CPPCHECK_TESTS) --std=c99 --platform=unix32 .
 
 clean:
 	rm -rf *~ *.o docs spe_printf-example
