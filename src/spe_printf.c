@@ -51,14 +51,13 @@
  * \li d: prints out a signed integer variable in decimal format.
  * \li u: prints out an unsigned integer variable in decimal format.
  * \li x: prints out an unsigned integer variable in hexadecimal format.
- * \li b: prints out an unsigned integer variable in binary format.
  * \li f: prints out floating point number, if compiled in. Compile with
  * ``CFLAGS += -DUSE_DOUBLE`` as argument to compiler.
  *
  * \subsection conversion_tags_optional Optional
  *
- * The `l` modifier can be used with signed and unsigned conversion tags
- * print out `long` variables (`%%lu` and `%%ld`).
+ * The `l` modifier can be used with signed, unsigned and hexadecimal
+ * conversion tags to print out `long` variables (`%%lu`, `%%ld` and `%%lx`).
  *
  * \section printf_variants Variants of the printf routines
  *
@@ -479,10 +478,13 @@ conversion(SPE_FILE *fd, const char *fmt, int i, const va_list *ap)
             }
             return i;
         case 'x': /* Hex */
-            print_ui(fd, va_arg(*ap, unsigned int), 16, min_width, precision, 0);
-            return i;
-        case 'b': /* Binary */
-            print_ui(fd, va_arg(*ap, unsigned int), 2, min_width, precision, 0);
+            if (long_modifier) {
+                print_uil(fd, va_arg(*ap, unsigned long), 16, min_width,
+                          precision, 0);
+            } else {
+                print_ui(fd, va_arg(*ap, unsigned int), 16, min_width,
+                         precision, 0);
+            }
             return i;
 #ifdef USE_DOUBLE
         case 'f':

@@ -91,13 +91,6 @@ TEST(spe_printf, NewTest)
     STRCMP_EQUAL("k1,2", output_mock_get_string());
 }
 
-/* Not supported by libc printf */
-TEST(spe_printf, BinaryIntegers)
-{
-    spe_printf("%16.16b", 0x0f0f);
-    STRCMP_EQUAL("0000111100001111", output_mock_get_string());
-}
-
 TEST(spe_printf, Characters)
 {
     do_comparison("Character %c\n", 'c');

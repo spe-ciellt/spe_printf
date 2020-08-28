@@ -90,16 +90,21 @@ extern SPE_FILE *spe_stderr;
  * 'u': Unsigned integer and long
  * 'l': long modifier, used with u and d
  * 'x': Hex, takes unsigned integer
- * 'b': Binary, takes unsigned integer
  * 'f': Double, floating point, if support is compiled in
  */
 
-int spe_fprintf(SPE_FILE *fd, const char *fmt, ...);
-int spe_printf(const char *fmt, ...);
-int spe_snprintf(char *str, const size_t size, const char *fmt, ...);
-int spe_vfprintf(SPE_FILE *fd, const char *fmt, va_list ap);
-int spe_vprintf(const char *fmt, va_list ap);
-int spe_vsnprintf(char *str, const size_t size, const char *fmt, va_list ap);
+int spe_fprintf(SPE_FILE *fd, const char *fmt, ...)
+    __attribute__((__format__(__printf__, 2, 3)));
+int spe_printf(const char *fmt, ...)
+    __attribute__((__format__(__printf__, 1, 2)));
+int spe_snprintf(char *str, const size_t size, const char *fmt, ...)
+    __attribute__((__format__(__printf__, 3, 4)));
+int spe_vfprintf(SPE_FILE *fd, const char *fmt, va_list ap)
+    __attribute__((__format__(__printf__, 2, 0)));
+int spe_vprintf(const char *fmt, va_list ap)
+    __attribute__((__format__(__printf__, 1, 0)));
+int spe_vsnprintf(char *str, const size_t size, const char *fmt, va_list ap)
+    __attribute__((__format__(__printf__, 3, 0)));
 
 #ifdef __cplusplus
 }
