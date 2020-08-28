@@ -22,6 +22,10 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      # Install cppcheck and cpputest
+      - name: Install cppcheck and cpputest
+        run: sudo apt install cppcheck cpputest
+
       # Build source code and runs cppcheck on it
       - name: Build and run cppcheck on source
         run: cd src && make && make cppcheck && cd ..
