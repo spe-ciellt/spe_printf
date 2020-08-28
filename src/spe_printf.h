@@ -90,7 +90,6 @@ extern SPE_FILE *spe_stderr;
  * 'u': Unsigned integer and long
  * 'l': long modifier, used with u and d
  * 'x': Hex, takes unsigned integer
- * 'b': Binary, takes unsigned integer
  * 'f': Double, floating point, if support is compiled in
  */
 

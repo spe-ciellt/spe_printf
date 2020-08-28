@@ -9,7 +9,7 @@ It supports:
 * minimal width and optional precision for all numerical types.
 * long modifier.
 * plain percent (%), character (c), string (s), signed integer, 
-  unsigned integer(u), hex (x) and binary (b).
+  unsigned integer(u) and hex (x).
 * double if compiled in, see below.
 * Includes variadic versions of all printf() functions.
 * Includes snprintf()/vsnprintf() versions to print to strings.
