@@ -7,7 +7,7 @@ Supported conversion tags
 ==
 It supports:
 * minimal width and optional precision for all numerical types.
-* long modifier.
+* long modifier for all numerical conversion tags.
 * plain percent (%), character (c), string (s), signed integer, 
   unsigned integer(u) and hex (x).
 * double if compiled in, see below.
