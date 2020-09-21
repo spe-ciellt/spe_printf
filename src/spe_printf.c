@@ -95,7 +95,14 @@
 #include <math.h>
 #endif /* USE_DOUBLE */
 
-static const char tohex[] = "0123456789abcdef";
+static const char tohex_lc[] = "0123456789abcdef";
+static const char tohex_uc[] = "0123456789ABCDEF";
+
+enum base_t {
+    BASE_DECIMAL,
+    BASE_HEX_UPPER_CASE,
+    BASE_HEX_LOWER_CASE,
+};
 
 static void
 print_char(SPE_FILE *fd, const char c)
@@ -119,7 +126,7 @@ print_char(SPE_FILE *fd, const char c)
  *
  * @param fd Pointer to filedescriptor to output result to.
  * @param number The actual number to print out.
- * @param base Base to print out number in. Most comman are 2, 10 and 16.
+ * @param base Base to print out number in, see enum base_t.
  * @param min_width Minimum field width.
  * @param precision Minimum number of digits to represent the integer.
  * @param neg Non-zero if a minus sign should be added. Determined by the
@@ -128,16 +135,17 @@ print_char(SPE_FILE *fd, const char c)
  * @retval -1 on failure.
  */
 static int
-print_uil(SPE_FILE *fd, unsigned long number, const int base,
+print_uil(SPE_FILE *fd, unsigned long number, const enum base_t base,
           int min_width, const int precision, int neg)
 {
     unsigned long divider = 1UL;
     int nuf_digits = 1;
+    unsigned long base_num = (base == BASE_DECIMAL) ? 10 : 16;
 
     /* Find the biggest number dividable by base to use as starting
        point for dividing down character by character*/
-    while ((number / divider) >= (unsigned long)base) {
-        divider *= (unsigned long)base;
+    while ((number / divider) >= base_num) {
+        divider *= base_num;
         nuf_digits++;
         if (divider == 0L) {
             return -1;
@@ -173,9 +181,13 @@ print_uil(SPE_FILE *fd, unsigned long number, const int base,
     /* This is the secret sauce to this no-buffering print routine. */
     while (1) {
         unsigned long digit = number / divider;
-        print_char(fd, tohex[digit]);
+        if (base == BASE_HEX_LOWER_CASE) {
+            print_char(fd, tohex_lc[digit]);
+        } else {
+            print_char(fd, tohex_uc[digit]);
+        }
         number = number - (digit * divider);
-        divider /= (unsigned long)base;
+        divider /= base_num;
         if (divider == 0L) {
             break;
         }
@@ -193,7 +205,7 @@ print_uil(SPE_FILE *fd, unsigned long number, const int base,
  *
  * @param fd Pointer to filedescriptor to output result to.
  * @param number The actual number to print out.
- * @param base Base t print out number in. Most comman are 2, 10 and 16.
+ * @param base Base t print out number in, see enum base_t.
  * @param min_width Minimum field width.
  * @param precision Minimum number of digits to represent the integer.
  * @param neg Non-zero if a minus sign should be added. Determined by the
@@ -202,7 +214,7 @@ print_uil(SPE_FILE *fd, unsigned long number, const int base,
  * @retval -1 on failure.
  */
 static int
-print_sil(SPE_FILE *fd, signed long number, const int base,
+print_sil(SPE_FILE *fd, signed long number, const enum base_t base,
           const int min_width, const int precision)
 {
     int neg = 0;
@@ -225,7 +237,7 @@ print_sil(SPE_FILE *fd, signed long number, const int base,
  *
  * @param fd Pointer to filedescriptor to output result to.
  * @param number The actual number to print out.
- * @param base Base t print out number in. Most comman are 2, 10 and 16.
+ * @param base Base t print out number in, see enum base_t.
  * @param min_width Minimum field width.
  * @param precision Minimum number of digits to represent the integer.
  * @param neg Non-zero if a minus sign should be added. Determined by the
@@ -234,16 +246,17 @@ print_sil(SPE_FILE *fd, signed long number, const int base,
  * @retval -1 on failure.
  */
 static int
-print_ui(SPE_FILE *fd, unsigned int number, int base,
+print_ui(SPE_FILE *fd, unsigned int number, const enum base_t base,
          int min_width, int precision, int neg)
 {
     unsigned long divider = 1UL;
     int nuf_digits = 1;
+    unsigned long base_num = (base == BASE_DECIMAL) ? 10 : 16;
 
     /* Find the biggest number dividable by base to use as starting
        point for dividing down character by character*/
-    while ((number / divider) >= (unsigned int)base){
-        divider *= (unsigned long)base;
+    while ((number / divider) >= base_num){
+        divider *= base_num;
         nuf_digits++;
         if (divider == 0L) {
             return -1;
@@ -279,9 +292,13 @@ print_ui(SPE_FILE *fd, unsigned int number, int base,
     /* This is the secret sauce to this no-buffering print routine. */
     while (1) {
         unsigned long digit = number / divider;
-        print_char(fd, tohex[digit]);
+        if (base == BASE_HEX_LOWER_CASE) {
+            print_char(fd, tohex_lc[digit]);
+        } else {
+            print_char(fd, tohex_uc[digit]);
+        }
         number = number - (unsigned int)(digit * divider);
-        divider /= (unsigned long)base;
+        divider /= base_num;
         if (divider == 0L) {
             break;
         }
@@ -299,7 +316,7 @@ print_ui(SPE_FILE *fd, unsigned int number, int base,
  *
  * @param fd Pointer to filedescriptor to output result to.
  * @param number The actual number to print out.
- * @param base Base t print out number in. Most comman are 2, 10 and 16.
+ * @param base Base t print out number in, see enum base_t.
  * @param min_width Minimum field width.
  * @param precision Minimum number of digits to represent the integer.
  * @param neg Non-zero if a minus sign should be added. Determined by the
@@ -309,7 +326,8 @@ print_ui(SPE_FILE *fd, unsigned int number, int base,
  * @retval -1 on failure.
  */
 static int
-print_si(SPE_FILE *fd, signed int number, int base, int min_width, int precision)
+print_si(SPE_FILE *fd, signed int number, const enum base_t base,
+         int min_width, int precision)
 {
     int neg = 0;
 
@@ -380,9 +398,9 @@ print_d(SPE_FILE *fd, double fp, int min_width, int precision)
     }
 
     /* Print it as the integer part, a dot and the decimal part */
-    print_ui(fd, ii, 10, min_width, 0, neg);
+    print_ui(fd, ii, BASE_DECIMAL, min_width, 0, neg);
     print_char(fd, '.');
-    print_ui(fd, id, 10, precision, precision, 0);
+    print_ui(fd, id, BASE_DECIMAL, precision, precision, 0);
 
     return 0;
 } /* printf_d */
@@ -460,9 +478,11 @@ conversion(SPE_FILE *fd, const char *fmt, int i, const va_list *ap)
             return i;
         case 'd': /* Signed integer and long */
             if (long_modifier) {
-                print_sil(fd, va_arg(*ap, long), 10, min_width, precision);
+                print_sil(fd, va_arg(*ap, long), BASE_DECIMAL, min_width,
+                          precision);
             } else {
-                print_si(fd, va_arg(*ap, int), 10, min_width, precision);
+                print_si(fd, va_arg(*ap, int), BASE_DECIMAL, min_width,
+                         precision);
             }
             return i;
         case 'l': /* long modifier, used with u and d */
@@ -470,20 +490,29 @@ conversion(SPE_FILE *fd, const char *fmt, int i, const va_list *ap)
             break;
         case 'u': /* Unsigned integer and long */
             if (long_modifier) {
-                print_uil(fd, va_arg(*ap, unsigned long), 10,
+                print_uil(fd, va_arg(*ap, unsigned long), BASE_DECIMAL,
                           min_width, precision, 0);
             } else {
-                print_ui(fd, va_arg(*ap, unsigned int), 10,
+                print_ui(fd, va_arg(*ap, unsigned int), BASE_DECIMAL,
                          min_width, precision, 0);
             }
             return i;
         case 'x': /* Hex */
             if (long_modifier) {
-                print_uil(fd, va_arg(*ap, unsigned long), 16, min_width,
-                          precision, 0);
+                print_uil(fd, va_arg(*ap, unsigned long), BASE_HEX_LOWER_CASE,
+                          min_width, precision, 0);
             } else {
-                print_ui(fd, va_arg(*ap, unsigned int), 16, min_width,
-                         precision, 0);
+                print_ui(fd, va_arg(*ap, unsigned int), BASE_HEX_LOWER_CASE,
+                         min_width, precision, 0);
+            }
+            return i;
+        case 'X': /* Hex */
+            if (long_modifier) {
+                print_uil(fd, va_arg(*ap, unsigned long), BASE_HEX_UPPER_CASE,
+                          min_width, precision, 0);
+            } else {
+                print_ui(fd, va_arg(*ap, unsigned int), BASE_HEX_UPPER_CASE,
+                         min_width, precision, 0);
             }
             return i;
 #ifdef USE_DOUBLE

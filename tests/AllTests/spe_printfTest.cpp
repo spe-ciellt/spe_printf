@@ -77,11 +77,16 @@ TEST(spe_printf, InitalTest)
     STRCMP_EQUAL(ref_string, output_mock_get_string());
 }
 
-/* Not supported by libc printf */
-TEST(spe_printf, HexIntegers)
+TEST(spe_printf, HexIntegersLowerCase)
 {
     LONGS_EQUAL(0, spe_printf("0x%x", 0xabc12def));
     STRCMP_EQUAL("0xabc12def", output_mock_get_string());
+}
+
+TEST(spe_printf, HexIntegersUpperCase)
+{
+    LONGS_EQUAL(0, spe_printf("0x%X", 0xabc12def));
+    STRCMP_EQUAL("0xABC12DEF", output_mock_get_string());
 }
 
 /* Not supported by libc printf */
