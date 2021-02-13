@@ -22,7 +22,6 @@
 
 CC=gcc
 CFLAGS=-Wall -Wextra -DUSE_DOUBLE -std=c99
-LDLIBS=-lm
 
 CPPCHECK_TESTS = "--enable=warning,style,performance,portability"
 

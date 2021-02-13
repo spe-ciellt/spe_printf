@@ -149,6 +149,11 @@ TEST(spe_printf, SmallDecimalDouble)
     do_comparison("[%f] and [%7.2f]", 12.0034, -43.21);
 }
 
+TEST(spe_printf, BigDecimalDouble)
+{
+    do_comparison("[%f] and [%7.2f]", 12.9999, -43.98);
+}
+
 TEST(spe_printf, SeveralCharacters)
 {
     do_comparison("%u,%u", 1, 2);

@@ -43,7 +43,6 @@ CPPUTEST_USE_EXTENSIONS = Y
 CPPUTEST_WARNINGFLAGS =  -Wall -Wextra -Werror -Wshadow -Wswitch-default -Wswitch-enum -Wcast-qual -Wsign-compare -Wconversion
 CPPUTEST_CFLAGS = -DUSE_DOUBLE -O3
 CPPUTEST_CPPFLAGS = $(CPPUTEST_CFLAGS)
-CPPUTEST_LDFLAGS = -lm
 
 CPP_PLATFORM = Gcc
 
