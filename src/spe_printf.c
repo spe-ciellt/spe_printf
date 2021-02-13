@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2020 Stefan Petersen, Ciellt AB
+ * Copyright (c) 2013-2021 Stefan Petersen, Ciellt AB
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -90,10 +90,6 @@
 #include <stdarg.h>
 
 #include "spe_printf.h"
-
-#ifdef USE_DOUBLE
-#include <math.h>
-#endif /* USE_DOUBLE */
 
 static const char tohex_lc[] = "0123456789abcdef";
 static const char tohex_uc[] = "0123456789ABCDEF";
@@ -385,7 +381,7 @@ print_d(SPE_FILE *fd, double fp, int min_width, int precision)
 
     /* Split double into integer integer and integer decimal */
     ii = (unsigned int)fp;
-    tmp = fp  * pm - trunc(fp) * pm;
+    tmp = fp  * pm - (int)fp * pm;
     id = (unsigned int)tmp;
 
     /* Punctuation is included in the min_width */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2019 Stefan Petersen, Ciellt AB
+ * Copyright (c) 2013-2021 Stefan Petersen, Ciellt AB
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -147,6 +147,11 @@ TEST(spe_printf, PositivAndNegativeDouble)
 TEST(spe_printf, SmallDecimalDouble)
 {
     do_comparison("[%f] and [%7.2f]", 12.0034, -43.21);
+}
+
+TEST(spe_printf, BigDecimalDouble)
+{
+    do_comparison("[%f] and [%7.2f]", 12.9999, -43.98);
 }
 
 TEST(spe_printf, SeveralCharacters)

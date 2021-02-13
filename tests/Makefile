@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2013-2019 Stefan Petersen, Ciellt AB
+# Copyright (c) 2013-2021 Stefan Petersen, Ciellt AB
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -43,7 +43,6 @@ CPPUTEST_USE_EXTENSIONS = Y
 CPPUTEST_WARNINGFLAGS =  -Wall -Wextra -Werror -Wshadow -Wswitch-default -Wswitch-enum -Wcast-qual -Wsign-compare -Wconversion
 CPPUTEST_CFLAGS = -DUSE_DOUBLE -O3
 CPPUTEST_CPPFLAGS = $(CPPUTEST_CFLAGS)
-CPPUTEST_LDFLAGS = -lm
 
 CPP_PLATFORM = Gcc
 

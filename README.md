@@ -22,11 +22,7 @@ It does not support:
 double()
 ==
 It can print doubles too. Then the variable USE_DOUBLE needs to be set
-when compiling, by for instance adding *CFLAGS+=-DUSE_DOUBLE* in the Makefile.
-When including usage of double, math.h and math lib is necessary. Using just
-casting to change one part (integer or decimal) of the double to an int lost
-too much precision. So by using truncf() instead I managed to get better
-precision, especially in the decimal part.
+when compiling, by for instance adding `CFLAGS+=-DUSE_DOUBLE` in the Makefile.
 
 Documentation
 ==
